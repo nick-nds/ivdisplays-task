@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', Role::values())->default(Role::USER->value);
+            $table->string('current_session_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

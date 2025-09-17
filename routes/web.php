@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ForceLoginController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,7 +18,7 @@ Route::middleware(['auth', 'role:user'])->get('/dashboard', function () {
 })->name('dashboard');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Auth/Admin/Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 });
+
+Route::apiResource('/force-login', ForceLoginController::class)->only('store');

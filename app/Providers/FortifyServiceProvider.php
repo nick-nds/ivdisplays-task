@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\LoginResponse as FortifyLoginResponse;
 use Laravel\Fortify\Fortify;
 
@@ -33,7 +34,19 @@ class FortifyServiceProvider extends ServiceProvider
             $user = User::where('username', $request->username)->first();
 
             if ($user && Hash::check($request->password, $user->password)) {
+
+                $currentSessionId = session()->getId();
+                if (
+                    $user->sessions()->where('id', '!=', $currentSessionId)->exists()
+                ) {
+                    throw ValidationException::withMessages([
+                        'session' => [
+                            'You are already logged in on another device. Do you want to log out that session?',
+                        ],
+                    ])->status(423);
+                }
                 return $user;
+
             }
         });
 
