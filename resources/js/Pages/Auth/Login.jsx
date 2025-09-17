@@ -1,8 +1,18 @@
-import { Head } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import GuestLayout from "@/Layouts/GuestLayout";
 import Logo from "@/Components/Logo";
 
 export default function Login() {
+  const { data, setData, post, processing, errors } = useForm({
+    username: "",
+    password: "",
+  });
+
+  const submit = (e) => {
+    e.preventDefault();
+    post(route('login.store'));
+  };
+
   return (
     <>
       <Head title="Login" />
@@ -11,7 +21,7 @@ export default function Login() {
           <Logo />
         </div>
 
-        <form className="mt-6">
+        <form onSubmit={submit} className="mt-6">
           <div>
             <label
               htmlFor="username"
@@ -23,10 +33,17 @@ export default function Login() {
               type="text"
               id="username"
               name="username"
+              placeholder="Username"
+              value={data.username}
+              onChange={(e) => setData("username", e.target.value)}
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg 
                          focus:border-blue-400 focus:ring-blue-300 
                          focus:outline-none focus:ring focus:ring-opacity-40"
             />
+
+            {errors.username && (
+              <p className="mt-1 text-sm text-red-600">{username.email}</p>
+            )}
           </div>
 
           <div className="mt-4">
@@ -43,21 +60,36 @@ export default function Login() {
               type="password"
               id="password"
               name="password"
+              placeholder="Password"
+              value={data.passwod}
+              onChange={(e) => setData("password", e.target.value)}
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg 
                          focus:border-blue-400 focus:ring-blue-300 
                          focus:outline-none focus:ring focus:ring-opacity-40"
             />
+
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+            )}
           </div>
+
+    
+          {errors.username && !errors.password && (
+            <p className="mt-2 text-sm text-red-600">
+              These credentials do not match our records.
+            </p>
+          )}
 
           <div className="mt-6">
             <button
               type="submit"
+              disabled={processing}
               className="w-full px-6 py-2.5 text-sm font-medium tracking-wide text-white capitalize 
                          transition-colors duration-300 transform bg-blue-800 rounded-lg 
                          hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 
                          focus:ring-opacity-50"
             >
-              Sign In
+              {processing ? "Signing in..." : "Sign In"}
             </button>
           </div>
         </form>

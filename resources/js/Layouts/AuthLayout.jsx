@@ -9,13 +9,7 @@ export default function AuthLayout({ children }) {
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-lg font-bold text-gray-800">Dashboard</h1>
           <nav className="space-x-4">
-            <Link href="/dashboard" className="text-gray-600 hover:underline">
-              Dashboard
-            </Link>
-            <Link href="/settings" className="text-gray-600 hover:underline">
-              Settings
-            </Link>
-            <Link href="/logout" method="post" as="button" className="text-red-500">
+            <Link href="/logout" method="post" as="button" className="text-red-500 cursor-pointer">
               Logout
             </Link>
           </nav>
