@@ -63,6 +63,16 @@ cp .env.example .env
 npm run build
 ```
 
+### Start reverb
+```bash
+./vendor/bin/sail artisan reverb:start
+```
+
+### Start queue worker
+```bash
+./vendor/bin/sail artisan queue:work
+```
+
 
 ## Authentication
 This project uses Laravel Fortify for authentication and an enum role column on the users table.

@@ -7,6 +7,7 @@ use App\Http\Requests\ForceLoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use App\Events\SessionInvalidated;
 
 class ForceLoginController extends Controller
 {
@@ -20,15 +21,20 @@ class ForceLoginController extends Controller
 
         $user = Auth::user();
 
-        if($user->sessions->count() > 0) {
-            $user->sessions()
-                 ->where(
-                     'id',
-                     '!=',
-                     session()->getId()
-                 )
-                 ->delete();
-        }
+        // $sessionId = $user->sessions()->first();
+
+        $user->sessions()
+             ->where(
+                 'id',
+                 '!=',
+                 session()->getId()
+             )
+             ->get()
+             ->each(function($s) {
+                $sessionId = $s->id;
+                $s->delete();
+                SessionInvalidated::dispatch($sessionId);
+             });
 
         if($user->role === Role::ADMIN->value) {
             return redirect()->route('admin.dashboard');
